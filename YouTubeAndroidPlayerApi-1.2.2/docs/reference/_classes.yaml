@@ -1,0 +1,63 @@
+
+toc:
+- author: "com.google.android.youtube.player"
+  path: reference/com/google/android/youtube/player/package-summary.html
+  section: 
+    
+  - author: "YouTubeApiServiceUtil"
+    path: reference/com/google/android/youtube/player/YouTubeApiServiceUtil.html
+    
+  - author: "YouTubeBaseActivity"
+    path: reference/com/google/android/youtube/player/YouTubeBaseActivity.html
+    
+  - author: "YouTubeInitializationResult"
+    path: reference/com/google/android/youtube/player/YouTubeInitializationResult.html
+    
+  - author: "YouTubeIntents"
+    path: reference/com/google/android/youtube/player/YouTubeIntents.html
+    
+  - author: "YouTubePlayer"
+    path: reference/com/google/android/youtube/player/YouTubePlayer.html
+    section: 
+    - author: "YouTubePlayer.ErrorReason"
+      path: reference/com/google/android/youtube/player/YouTubePlayer.ErrorReason.html
+    - author: "YouTubePlayer.OnFullscreenListener"
+      path: reference/com/google/android/youtube/player/YouTubePlayer.OnFullscreenListener.html
+    - author: "YouTubePlayer.OnInitializedListener"
+      path: reference/com/google/android/youtube/player/YouTubePlayer.OnInitializedListener.html
+    - author: "YouTubePlayer.PlaybackEventListener"
+      path: reference/com/google/android/youtube/player/YouTubePlayer.PlaybackEventListener.html
+    - author: "YouTubePlayer.PlayerStateChangeListener"
+      path: reference/com/google/android/youtube/player/YouTubePlayer.PlayerStateChangeListener.html
+    - author: "YouTubePlayer.PlayerStyle"
+      path: reference/com/google/android/youtube/player/YouTubePlayer.PlayerStyle.html
+    - author: "YouTubePlayer.PlaylistEventListener"
+      path: reference/com/google/android/youtube/player/YouTubePlayer.PlaylistEventListener.html
+    - author: "YouTubePlayer.Provider"
+      path: reference/com/google/android/youtube/player/YouTubePlayer.Provider.html
+    
+  - author: "YouTubePlayerFragment"
+    path: reference/com/google/android/youtube/player/YouTubePlayerFragment.html
+    
+  - author: "YouTubePlayerSupportFragment"
+    path: reference/com/google/android/youtube/player/YouTubePlayerSupportFragment.html
+    
+  - author: "YouTubePlayerView"
+    path: reference/com/google/android/youtube/player/YouTubePlayerView.html
+    
+  - author: "YouTubeStandalonePlayer"
+    path: reference/com/google/android/youtube/player/YouTubeStandalonePlayer.html
+    
+  - author: "YouTubeThumbnailLoader"
+    path: reference/com/google/android/youtube/player/YouTubeThumbnailLoader.html
+    section: 
+    - author: "YouTubeThumbnailLoader.ErrorReason"
+      path: reference/com/google/android/youtube/player/YouTubeThumbnailLoader.ErrorReason.html
+    - author: "YouTubeThumbnailLoader.OnThumbnailLoadedListener"
+      path: reference/com/google/android/youtube/player/YouTubeThumbnailLoader.OnThumbnailLoadedListener.html
+    
+  - author: "YouTubeThumbnailView"
+    path: reference/com/google/android/youtube/player/YouTubeThumbnailView.html
+    section: 
+    - author: "YouTubeThumbnailView.OnInitializedListener"
+      path: reference/com/google/android/youtube/player/YouTubeThumbnailView.OnInitializedListener.html
