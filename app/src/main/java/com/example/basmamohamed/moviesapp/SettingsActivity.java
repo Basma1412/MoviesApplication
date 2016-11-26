@@ -24,7 +24,7 @@ public class SettingsActivity extends PreferenceActivity  implements Preference.
          }
         else
          {
-             Toast.makeText(this, "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
+             Toast.makeText(this, "Please Try connecting to the internet and try again from settngs on create", Toast.LENGTH_LONG).show();
 
          }
 
@@ -40,7 +40,7 @@ public class SettingsActivity extends PreferenceActivity  implements Preference.
         }
         else
         {
-            Toast.makeText(this, "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Try connecting to the internet and try again from bind summary", Toast.LENGTH_LONG).show();
 
         }
     }
@@ -61,7 +61,7 @@ public class SettingsActivity extends PreferenceActivity  implements Preference.
         }
         else
         {
-            Toast.makeText(this, "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Try connecting to the internet and try again from prefrence change", Toast.LENGTH_LONG).show();
             return false;
         }
 

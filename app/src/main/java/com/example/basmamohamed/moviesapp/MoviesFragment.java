@@ -68,7 +68,7 @@ public class MoviesFragment extends Fragment {
                 if (iconnection.isConnected())
                     detailsL.setMovieDetails(movieId, movieName, movieOverview, moviePoster, movieRating, movieDate);
                 else {
-                    Toast.makeText(getActivity(), "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Please Try connecting to the internet and try again movies frag 1", Toast.LENGTH_LONG).show();
                 }
 
 
@@ -111,7 +111,7 @@ public class MoviesFragment extends Fragment {
       }
         else
       {
-          Toast.makeText(getActivity(), "It seems that there is no internet, try reconnecting", Toast.LENGTH_LONG).show();
+          Toast.makeText(getActivity(), "It seems that there is no internet, try reconnecting update order", Toast.LENGTH_LONG).show();
 
       }
     }
@@ -258,7 +258,7 @@ public class MoviesFragment extends Fragment {
 
             else
             {
-                Toast.makeText(getActivity(), "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Please Try connecting to the internet and try again movies async task", Toast.LENGTH_LONG).show();
 
             }
         }

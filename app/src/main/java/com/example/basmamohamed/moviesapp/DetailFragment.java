@@ -426,9 +426,12 @@ public class DetailFragment extends Fragment {
         protected void onPostExecute(ReviewsAndTrailers rt) {
 
 
-            List<Review> revs = rt.getRev();
-            List<Trailer> trl = rt.getTrails();
-            if ((rt != null)||(revs != null))
+            if ((rt != null))
+            {
+
+                List<Review> revs = rt.getRev();
+                List<Trailer> trl = rt.getTrails();
+
             {     if(revs != null) {
                 rReviewsAdapter.removeAll();
                 rReviewsAdapter.addAll(revs);
@@ -439,10 +442,10 @@ public class DetailFragment extends Fragment {
                     tTrailersAdapter.addAll(trl);
 
                 }
-            }
+            }}
               else
                 {
-                    Toast.makeText(getActivity(), "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Please Try connecting to the internet and try again  async task", Toast.LENGTH_LONG).show();
 
                 }
             }
