@@ -5,39 +5,65 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
+
+import static android.R.attr.value;
+import static java.security.AccessController.getContext;
 
 public class SettingsActivity extends PreferenceActivity  implements Preference.OnPreferenceChangeListener{
 
+
+    InternetConnectivity iconnection;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.pref_general);
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sort_key)));
+        iconnection = new InternetConnectivity(this);
+         if (iconnection.isConnected()) {
+             addPreferencesFromResource(R.xml.pref_general);
+             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sort_key)));
+         }
+        else
+         {
+             Toast.makeText(this, "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
 
+         }
 
     }
 
     private void bindPreferenceSummaryToValue(Preference preference) {
-        preference.setOnPreferenceChangeListener(this);
-        onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
-    }
+        if (iconnection.isConnected()) {
+            preference.setOnPreferenceChangeListener(this);
+            onPreferenceChange(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getString(preference.getKey(), ""));
+        }
+        else
+        {
+            Toast.makeText(this, "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
 
+        }
+    }
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
         String stringValue = value.toString();
-
-        if (preference instanceof ListPreference) {
-            ListPreference listPreference = (ListPreference) preference;
-            int prefIndex = listPreference.findIndexOfValue(stringValue);
-            if (prefIndex >= 0) {
-                preference.setSummary(listPreference.getEntries()[prefIndex]);
+        if (iconnection.isConnected()) {
+            if (preference instanceof ListPreference) {
+                ListPreference listPreference = (ListPreference) preference;
+                int prefIndex = listPreference.findIndexOfValue(stringValue);
+                if (prefIndex >= 0) {
+                    preference.setSummary(listPreference.getEntries()[prefIndex]);
+                }
+            } else {
+                preference.setSummary(stringValue);
             }
-        } else {
-            preference.setSummary(stringValue);
+            return true;
         }
-        return true;
+        else
+        {
+            Toast.makeText(this, "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
     }
 }

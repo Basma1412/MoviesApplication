@@ -56,38 +56,38 @@ public class DetailFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-            Bundle intent = getBundle();
-            fav = (ImageButton) rootView.findViewById(R.id.favbtn);
-            deleteBtn = (ImageButton) rootView.findViewById(R.id.removeBtn);
-            myDB = new DatabaseHelper(this.getActivity());
-            if (intent != null) {
+        Bundle intent = getBundle();
+        fav = (ImageButton) rootView.findViewById(R.id.favbtn);
+        deleteBtn = (ImageButton) rootView.findViewById(R.id.removeBtn);
+        myDB = new DatabaseHelper(this.getActivity());
+        if (intent != null) {
 
-                MovieName = intent.getString("MovieName");
-                id = intent.getInt("mId");
-                movie_Id = id;
+            MovieName = intent.getString("MovieName");
+            id = intent.getInt("mId");
+            movie_Id = id;
 
-                movie_OverView = intent.getString("Movie OverView");
-                movieRating = intent.getString("MovieRating");
-                movie_Release_date = intent.getString("Movie_Release_date");
-                moviePoster = intent.getString("MoviePoster");
-
-
-                ((TextView) rootView.findViewById(R.id.detail_title)).setText(MovieName);
-                Picasso.with(this.getContext()).load("http://image.tmdb.org/t/p/w185/" + moviePoster).into((ImageView) rootView.findViewById(R.id.detail_poster));
-                ((TextView) rootView.findViewById(R.id.detail_overview)).setText(movie_OverView);
-                ((TextView) rootView.findViewById(R.id.detail_review)).setText(movieRating);
-                ((TextView) rootView.findViewById(R.id.detail_date)).setText(movie_Release_date);
+            movie_OverView = intent.getString("Movie OverView");
+            movieRating = intent.getString("MovieRating");
+            movie_Release_date = intent.getString("Movie_Release_date");
+            moviePoster = intent.getString("MoviePoster");
 
 
-            }
+            ((TextView) rootView.findViewById(R.id.detail_title)).setText(MovieName);
+            Picasso.with(this.getContext()).load("http://image.tmdb.org/t/p/w185/" + moviePoster).into((ImageView) rootView.findViewById(R.id.detail_poster));
+            ((TextView) rootView.findViewById(R.id.detail_overview)).setText(movie_OverView);
+            ((TextView) rootView.findViewById(R.id.detail_review)).setText(movieRating);
+            ((TextView) rootView.findViewById(R.id.detail_date)).setText(movie_Release_date);
 
 
-            ListView listView = (ListView) rootView.findViewById(R.id.reviews_list);
-            GridView gridView = (GridView) rootView.findViewById(R.id.trailers_grid);
-            rReviewsAdapter = new ReviewsAdapter(this.getActivity());
-            tTrailersAdapter = new TrailerAdapter(this.getActivity());
-            listView.setAdapter(rReviewsAdapter);
-            gridView.setAdapter(tTrailersAdapter);
+        }
+
+
+        ListView listView = (ListView) rootView.findViewById(R.id.reviews_list);
+        GridView gridView = (GridView) rootView.findViewById(R.id.trailers_grid);
+        rReviewsAdapter = new ReviewsAdapter(this.getActivity());
+        tTrailersAdapter = new TrailerAdapter(this.getActivity());
+        listView.setAdapter(rReviewsAdapter);
+        gridView.setAdapter(tTrailersAdapter);
 
 
 
@@ -138,10 +138,10 @@ public class DetailFragment extends Fragment {
 
 
         AddData();
-            deleteData();
+        deleteData();
 
-            return rootView;
-        }
+        return rootView;
+    }
 
 
 
@@ -211,9 +211,15 @@ public class DetailFragment extends Fragment {
 
         private final String LOG_TAG = FetchReviews.class.getSimpleName();
 
+
+        InternetConnectivity iconnection;
+        Boolean isConn;
+
+
         @Override
         protected ReviewsAndTrailers doInBackground(String... params) {
 
+            iconnection = new InternetConnectivity(getContext());
             ReviewsAndTrailers randt;
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -239,28 +245,31 @@ public class DetailFragment extends Fragment {
                         .appendPath("reviews")
                         .appendQueryParameter(APPID_PARAM, BuildConfig.OPEN_MOVIES_API_KEY);
                 URL url = new URL(builder.build().toString());
+                if (iconnection.isConnected()) {
 
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.connect();
 
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    ReviewsJsonStr = null;
+                    InputStream inputStream = urlConnection.getInputStream();
+                    StringBuffer buffer = new StringBuffer();
+                    if (inputStream == null) {
+                        ReviewsJsonStr = null;
+                    }
+                    reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line + "\n");
+                    }
+
+                    if (buffer.length() == 0) {
+                        ReviewsJsonStr = null;
+                    }
+                    ReviewsJsonStr = buffer.toString();
                 }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    ReviewsJsonStr = null;
-                }
-                ReviewsJsonStr = buffer.toString();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.e("ReviewsFragment", "Error ", e);
                 ReviewsJsonStr = null;
             } finally {
@@ -292,6 +301,8 @@ public class DetailFragment extends Fragment {
                 URL url2 = new URL(builder2.build().toString());
 
 
+                if (iconnection.isConnected())
+                {
                 urlConnection2 = (HttpURLConnection) url2.openConnection();
                 urlConnection2.setRequestMethod("GET");
                 urlConnection2.connect();
@@ -312,7 +323,7 @@ public class DetailFragment extends Fragment {
                     ReviewsJsonStr2 = null;
                 }
                 ReviewsJsonStr2 = buffer2.toString();
-            } catch (IOException e) {
+            } }catch (IOException e) {
                 Log.e("ReviewsFragment", "Error ", e);
                 ReviewsJsonStr2 = null;
 
@@ -337,12 +348,15 @@ public class DetailFragment extends Fragment {
             List<Trailer> t;
 
             try {
+                if (iconnection.isConnected())
+                {
                 r = getReviewsDataFormJson(ReviewsJsonStr);
                 t = getTrailersDataFormJson(ReviewsJsonStr2);
                 randt = new ReviewsAndTrailers(r, t);
                 return randt;
-            } catch (JSONException e) {
+            } }catch (JSONException e) {
                 e.printStackTrace();
+                return null;
             }
 
 
@@ -356,6 +370,8 @@ public class DetailFragment extends Fragment {
         private List<Review> getReviewsDataFormJson(String ReviewsJson)
                 throws JSONException {
 
+            if (iconnection.isConnected())
+            {
             JSONObject response = new JSONObject(ReviewsJson);
             JSONArray results = response.getJSONArray("results");
 
@@ -368,7 +384,7 @@ public class DetailFragment extends Fragment {
                 String content = obj.getString("content");
                 Review mm = new Review(rid, author, content);
                 listOfReviews.add(mm);
-            }
+            }}
             return listOfReviews;
 
 
@@ -380,6 +396,8 @@ public class DetailFragment extends Fragment {
         private List<Trailer> getTrailersDataFormJson(String ReviewsJson)
                 throws JSONException {
 
+            if (iconnection.isConnected())
+            {
             JSONObject response = new JSONObject(ReviewsJson);
             JSONArray results = response.getJSONArray("results");
 
@@ -391,7 +409,7 @@ public class DetailFragment extends Fragment {
                 String key = obj.getString("key");
                 Trailer tt = new Trailer(key, name);
                 listOfTrailers.add(tt);
-            }
+            }}
             return listOfTrailers;
 
 
@@ -410,22 +428,27 @@ public class DetailFragment extends Fragment {
 
             List<Review> revs = rt.getRev();
             List<Trailer> trl = rt.getTrails();
-            if (revs != null) {
+            if ((rt != null)||(revs != null))
+            {     if(revs != null) {
                 rReviewsAdapter.removeAll();
                 rReviewsAdapter.addAll(revs);
-
             }
 
-            if (rt != null) {
-                tTrailersAdapter.removeAll();
-                tTrailersAdapter.addAll(trl);
+                if (rt != null) {
+                    tTrailersAdapter.removeAll();
+                    tTrailersAdapter.addAll(trl);
 
+                }
             }
+              else
+                {
+                    Toast.makeText(getActivity(), "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
         }
-    }
+
 
 
 }
-
-
-

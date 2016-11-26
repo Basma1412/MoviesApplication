@@ -1,5 +1,6 @@
 package com.example.basmamohamed.moviesapp;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -64,7 +65,7 @@ public class MoviesFragment extends Fragment {
                 String moviePoster = mmovie.getPoster();
                 String movieRating = mmovie.getRating();
                 String movieDate = mmovie.getRelease_date();
-                if (isConn)
+                if (iconnection.isConnected())
                     detailsL.setMovieDetails(movieId, movieName, movieOverview, moviePoster, movieRating, movieDate);
                 else {
                     Toast.makeText(getActivity(), "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
@@ -88,23 +89,31 @@ public class MoviesFragment extends Fragment {
 
 
     private void updateOrder() {
-        FetchMovies moviesTask = new FetchMovies();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String order = prefs.getString(getString(R.string.pref_sort_key),
-                getString(R.string.pref_sort_default));
 
-        if (order.equals("favourites") || (!(isConn))) {
-            if (!isConn && (!(order.equals("favourites"))))
-                Toast.makeText(getActivity(), "It seems that there is no internet, so what about staying with your favorites movies untill you reconnect :D ", Toast.LENGTH_LONG).show();
-            DatabaseHelper myDB = new DatabaseHelper(this.getActivity());
-            movieList = new ArrayList<Movie>();
-            movieList = myDB.getAllMovies();
-            mMoviesAdapter.removeAll();
-            mMoviesAdapter.addAll(movieList);
-        } else {
-            moviesTask.execute(order);
-        }
 
+      if  (iconnection.isConnected()) {
+          FetchMovies moviesTask = new FetchMovies();
+          SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+          String order = prefs.getString(getString(R.string.pref_sort_key),
+                  getString(R.string.pref_sort_default));
+
+          if (order.equals("favourites") || (!(iconnection.isConnected()))) {
+              if (!isConn && (!(order.equals("favourites"))))
+                  Toast.makeText(getActivity(), "It seems that there is no internet, so what about staying with your favorites movies untill you reconnect :D ", Toast.LENGTH_LONG).show();
+              DatabaseHelper myDB = new DatabaseHelper(this.getActivity());
+              movieList = new ArrayList<Movie>();
+              movieList = myDB.getAllMovies();
+              mMoviesAdapter.removeAll();
+              mMoviesAdapter.addAll(movieList);
+          } else {
+              moviesTask.execute(order);
+          }
+      }
+        else
+      {
+          Toast.makeText(getActivity(), "It seems that there is no internet, try reconnecting", Toast.LENGTH_LONG).show();
+
+      }
     }
 
     @Override
@@ -117,9 +126,20 @@ public class MoviesFragment extends Fragment {
 
         private final String LOG_TAG = FetchMovies.class.getSimpleName();
 
+
+
+        InternetConnectivity iconnection;
+        Boolean isConn;
+
+
+
+
         @Override
         protected List<Movie> doInBackground(String... params) {
 
+
+
+            iconnection = new InternetConnectivity(getContext());
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -139,54 +159,59 @@ public class MoviesFragment extends Fragment {
                         .appendQueryParameter(APPID_PARAM, BuildConfig.OPEN_MOVIES_API_KEY);
                 URL url = new URL(builder.build().toString());
 
+                if (iconnection.isConnected()) {
+                    urlConnection = (HttpURLConnection) url.openConnection();
 
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.connect();
 
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
+                    InputStream inputStream = urlConnection.getInputStream();
+
+                    StringBuffer buffer = new StringBuffer();
+                    if (inputStream == null) {
+                        MoviesJsonStr = null;
+                    }
+
+                    reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line + "\n");
+                    }
+
+                    if (buffer.length() == 0) {
+                        MoviesJsonStr = null;
+                    }
+                    MoviesJsonStr = buffer.toString();}
+
+                }
+            catch(IOException e){
+                    Log.e("MoviesFragment", "Error ", e);
                     MoviesJsonStr = null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    MoviesJsonStr = null;
-                }
-                MoviesJsonStr = buffer.toString();
-            } catch (IOException e) {
-                Log.e("MoviesFragment", "Error ", e);
-                MoviesJsonStr = null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e("MoviesFragment", "Error closing stream", e);
+                }finally{
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (final IOException e) {
+                            Log.e("MoviesFragment", "Error closing stream", e);
+                        }
                     }
                 }
-            }
 
 
             try {
-                List<Movie> res = getMoviesDataFormJson(MoviesJsonStr);
-                return res;
+                 if (iconnection.isConnected())
+                 {List<Movie> res = getMoviesDataFormJson(MoviesJsonStr);
+                return res;}
             } catch (JSONException e) {
                 e.printStackTrace();
+                return null;
             }
 
-
             return null;
-
         }
 
 
@@ -194,11 +219,11 @@ public class MoviesFragment extends Fragment {
         private List<Movie> getMoviesDataFormJson(String MoviesJsonStr)
                 throws JSONException {
 
-            JSONObject response = new JSONObject(MoviesJsonStr);
-            JSONArray results = response.getJSONArray("results");
-
 
             listOfMovies = new ArrayList<>();
+            if (iconnection.isConnected())
+            {JSONObject response = new JSONObject(MoviesJsonStr);
+            JSONArray results = response.getJSONArray("results");
             for (int i = 0; i < results.length(); i++) {
                 JSONObject obj = results.getJSONObject(i);
                 int mid = obj.getInt("id");
@@ -209,7 +234,7 @@ public class MoviesFragment extends Fragment {
                 String release_date = obj.getString("release_date");
                 Movie mm = new Movie(mid, title, poster, description, rating, release_date);
                 listOfMovies.add(mm);
-            }
+            }}
             return listOfMovies;
 
 
@@ -228,6 +253,12 @@ public class MoviesFragment extends Fragment {
             if (movies != null) {
                 mMoviesAdapter.removeAll();
                 mMoviesAdapter.addAll(movies);
+
+            }
+
+            else
+            {
+                Toast.makeText(getActivity(), "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
 
             }
         }

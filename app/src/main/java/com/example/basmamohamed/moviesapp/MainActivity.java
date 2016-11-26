@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity implements DetailsListener {
@@ -59,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements DetailsListener {
 
     @Override
     public void setMovieDetails(int Id, String name, String overview, String poster, String rating, String date) {
+
+        InternetConnectivity iconnection;
+        iconnection = new InternetConnectivity(this);
         if (isBig)
         {
             DetailFragment detailsFrag=new DetailFragment();
@@ -70,7 +74,11 @@ public class MainActivity extends AppCompatActivity implements DetailsListener {
             extras.putString("MovieRating", rating);
             extras.putString("Movie_Release_date", date);
             detailsFrag.setArguments(extras);
-            getSupportFragmentManager().beginTransaction().replace(R.id.movie_detail_container,detailsFrag,"").commit();
+            if (iconnection.isConnected())
+            {getSupportFragmentManager().beginTransaction().replace(R.id.movie_detail_container,detailsFrag,"").commit();}
+            else {
+                Toast.makeText(this, "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
+            }
         }
         else
         {
@@ -84,7 +92,11 @@ public class MainActivity extends AppCompatActivity implements DetailsListener {
                 extras.putString("MovieRating", rating);
                 extras.putString("Movie_Release_date", date);
                 intent.putExtras(extras);
-                startActivity(intent);
+            if(iconnection.isConnected())
+            { startActivity(intent);}
+            else {
+                Toast.makeText(this, "Please Try connecting to the internet and try again", Toast.LENGTH_LONG).show();
+            }
 
         }
 
