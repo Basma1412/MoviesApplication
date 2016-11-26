@@ -28,6 +28,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.order;
+
 public class MoviesFragment extends Fragment {
 
     public MoviesFragment() {
@@ -68,7 +70,7 @@ public class MoviesFragment extends Fragment {
                 if (iconnection.isConnected())
                     detailsL.setMovieDetails(movieId, movieName, movieOverview, moviePoster, movieRating, movieDate);
                 else {
-                    Toast.makeText(getActivity(), "Please Try connecting to the internet and try again movies frag 1", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Connect to the internet then try again ", Toast.LENGTH_LONG).show();
                 }
 
 
@@ -90,28 +92,29 @@ public class MoviesFragment extends Fragment {
 
     private void updateOrder() {
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String order = prefs.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_default));
+        if (order.equals("favourites"))
+        {
+            DatabaseHelper myDB = new DatabaseHelper(this.getActivity());
+            movieList = new ArrayList<Movie>();
+            movieList = myDB.getAllMovies();
+            mMoviesAdapter.removeAll();
+            mMoviesAdapter.addAll(movieList);
+        }
 
-      if  (iconnection.isConnected()) {
+     else if  (iconnection.isConnected()) {
           FetchMovies moviesTask = new FetchMovies();
-          SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-          String order = prefs.getString(getString(R.string.pref_sort_key),
-                  getString(R.string.pref_sort_default));
-
-          if (order.equals("favourites") || (!(iconnection.isConnected()))) {
-              if (!isConn && (!(order.equals("favourites"))))
-                  Toast.makeText(getActivity(), "It seems that there is no internet, so what about staying with your favorites movies untill you reconnect :D ", Toast.LENGTH_LONG).show();
-              DatabaseHelper myDB = new DatabaseHelper(this.getActivity());
-              movieList = new ArrayList<Movie>();
-              movieList = myDB.getAllMovies();
-              mMoviesAdapter.removeAll();
-              mMoviesAdapter.addAll(movieList);
+          if (!(iconnection.isConnected())){
+                  Toast.makeText(getActivity(), "Connect to the internet then try again ", Toast.LENGTH_LONG).show();
           } else {
               moviesTask.execute(order);
           }
       }
         else
       {
-          Toast.makeText(getActivity(), "It seems that there is no internet, try reconnecting update order", Toast.LENGTH_LONG).show();
+          Toast.makeText(getActivity(), "Connect to the internet then try again ", Toast.LENGTH_LONG).show();
 
       }
     }
@@ -258,7 +261,7 @@ public class MoviesFragment extends Fragment {
 
             else
             {
-                Toast.makeText(getActivity(), "Please Try connecting to the internet and try again movies async task", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Connect to the internet then try again ", Toast.LENGTH_LONG).show();
 
             }
         }

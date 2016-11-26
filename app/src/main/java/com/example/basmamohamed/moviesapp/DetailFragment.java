@@ -445,7 +445,7 @@ public class DetailFragment extends Fragment {
             }}
               else
                 {
-                    Toast.makeText(getActivity(), "Please Try connecting to the internet and try again  async task", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Connect to the internet then try again ", Toast.LENGTH_LONG).show();
 
                 }
             }

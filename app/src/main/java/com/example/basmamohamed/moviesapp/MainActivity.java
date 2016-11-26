@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements DetailsListener {
             if (iconnection.isConnected())
             {getSupportFragmentManager().beginTransaction().replace(R.id.movie_detail_container,detailsFrag,"").commit();}
             else {
-                Toast.makeText(this, "Please Try connecting to the internet and try again main activity", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Connect to the internet then try again ", Toast.LENGTH_LONG).show();
             }
         }
         else
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements DetailsListener {
             if(iconnection.isConnected())
             { startActivity(intent);}
             else {
-                Toast.makeText(this, "Please Try connecting to the internet and try again main activity", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Connect to the internet then try again ", Toast.LENGTH_LONG).show();
             }
 
         }
