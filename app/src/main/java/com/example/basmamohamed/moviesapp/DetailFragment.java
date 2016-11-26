@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -89,7 +90,54 @@ public class DetailFragment extends Fragment {
             gridView.setAdapter(tTrailersAdapter);
 
 
-            AddData();
+
+
+        listView.setOnTouchListener(new ListView.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+
+
+                int touched = event.getAction();
+                switch (touched) {
+                    case MotionEvent.ACTION_DOWN:
+                        view.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        view.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+                view.onTouchEvent(event);
+                return true;
+
+
+            }
+        });
+
+
+
+        gridView.setOnTouchListener(new ListView.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+
+
+                int touched = event.getAction();
+                switch (touched) {
+                    case MotionEvent.ACTION_DOWN:
+                        view.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        view.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+                view.onTouchEvent(event);
+                return true;
+
+
+            }
+        });
+
+
+        AddData();
             deleteData();
 
             return rootView;

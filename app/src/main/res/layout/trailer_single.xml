@@ -11,13 +11,17 @@
         android:layout_height="wrap_content"
         android:id="@+id/trailer_name"
         tools:textSize="12sp"
-        android:textStyle="normal|bold" />
+        android:textStyle="normal|bold"
+        android:layout_marginLeft="10dp" />
 
     <ImageButton
         android:layout_width="71dp"
         android:layout_height="45dp"
         android:src="@android:drawable/ic_media_play"
-        android:id="@+id/videoTrailer"/>
+        android:id="@+id/videoTrailer"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp" />
 
 
 

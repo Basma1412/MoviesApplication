@@ -15,7 +15,8 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="com.example.basmamohamed.moviesapp.DetailFragment">
+        tools:context="com.example.basmamohamed.moviesapp.DetailFragment"
+        android:nestedScrollingEnabled="true">
 
 
         <RelativeLayout
@@ -156,7 +157,7 @@
                     <GridView
                         android:id="@+id/trailers_grid"
                         android:layout_width="match_parent"
-                        android:layout_height="55dp"
+                        android:layout_height="76dp"
 
                         android:numColumns="2" />
                 </LinearLayout>
